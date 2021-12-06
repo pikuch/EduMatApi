@@ -3,7 +3,6 @@ using EduMatApi.DAL.Repositories;
 using EduMatApi.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +32,9 @@ builder.Services.AddCors(options =>
     );
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IRepository<Author>, Repository<Author>>();
+builder.Services.AddScoped<IRepository<Material>, Repository<Material>>();
+builder.Services.AddScoped<IRepository<MaterialType>, Repository<MaterialType>>();
+builder.Services.AddScoped<IRepository<Review>, Repository<Review>>();
 
 var app = builder.Build();
 

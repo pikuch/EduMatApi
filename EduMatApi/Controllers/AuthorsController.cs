@@ -18,7 +18,10 @@ namespace EduMatApi.Controllers
         private readonly IMapper _mapper;
         private readonly IRepository<Author> _authorRepository;
 
-        public AuthorsController(ILogger<AuthorsController> logger, IMapper mapper, IRepository<Author> authorRepository)
+        public AuthorsController(
+            ILogger<AuthorsController> logger,
+            IMapper mapper,
+            IRepository<Author> authorRepository)
         {
             _logger = logger;
             _mapper = mapper;
@@ -95,7 +98,7 @@ namespace EduMatApi.Controllers
         /// Deletes an existing author
         /// </summary>
         /// <returns>Only a status code</returns>
-        [HttpDelete]
+        [HttpDelete("{id}")]
         [SwaggerOperation("Deletes an existing author", "DELETE /Authors/5")]
         [SwaggerResponse(StatusCodes.Status204NoContent, "Author deleted succesfully")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Author could not be deleted")]
