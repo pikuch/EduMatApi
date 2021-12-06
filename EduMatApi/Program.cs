@@ -3,6 +3,7 @@ using EduMatApi.DAL.Repositories;
 using EduMatApi.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +20,13 @@ builder.Services.AddSwaggerGen(options =>
         Description = "An ASP.NET Core Web API for managing Educational Materials"
     }
     );
+
+    // Set the comments path for the Swagger JSON and UI.    
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
 });
+
 builder.Services.AddDbContext<EduMatApiDbContext>(options =>
     options.UseSqlServer(builder.Configuration["ConnectionStrings:EduMatApiDbConnection"]));
 builder.Services.AddCors(options =>
