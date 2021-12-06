@@ -15,6 +15,7 @@ builder.Services.AddCors(options =>
                       builder => builder.AllowAnyOrigin()
                       )
     );
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 
