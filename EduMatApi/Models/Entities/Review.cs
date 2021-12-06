@@ -7,6 +7,7 @@ namespace EduMatApi.Models.Entities
         [Key]
         public int Id { get; set; }
 
+        [Required]
         public int MaterialId { get; set; }
         public Material? Material { get; set; }
 
