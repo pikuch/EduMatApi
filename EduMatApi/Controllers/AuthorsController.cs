@@ -91,5 +91,26 @@ namespace EduMatApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes an existing author
+        /// </summary>
+        /// <returns>Only a status code</returns>
+        [HttpDelete]
+        [SwaggerOperation("Deletes an existing author", "DELETE /Authors/5")]
+        [SwaggerResponse(StatusCodes.Status204NoContent, "Author deleted succesfully")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Author could not be deleted")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Author not found")]
+        public async Task<ActionResult<AuthorReadDto>> DeleteAuthor(int id)
+        {
+            var foundAuthor = await _authorRepository.GetByIdAsync(id);
+            if (foundAuthor == null)
+            {
+                return NotFound();
+            }
+
+            bool result = await _authorRepository.DeleteAsync(id);
+            
+            return result ? NoContent() : BadRequest();
+        }
     }
 }
