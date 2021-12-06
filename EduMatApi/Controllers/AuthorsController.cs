@@ -3,6 +3,7 @@ using EduMatApi.DAL.Repositories;
 using EduMatApi.Models.DTOs;
 using EduMatApi.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace EduMatApi.Controllers
 {
@@ -28,12 +29,10 @@ namespace EduMatApi.Controllers
         /// Gets all authors
         /// </summary>
         /// <returns>A collection of authors</returns>
-        /// <remarks>
-        /// GET /Authors
-        /// </remarks>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [SwaggerOperation("Gets all authors", "GET /Authors")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Authors retrived succesfully")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "No authors found")]
         public async Task<ActionResult<ICollection<AuthorReadDto>>> GetAllAuthors()
         {
             var allAuthors = await _authorRepository.GetAllAsync();
@@ -51,12 +50,10 @@ namespace EduMatApi.Controllers
         /// Gets author with given id
         /// </summary>
         /// <returns>Chosen author</returns>
-        /// <remarks>
-        /// GET /Authors/5
-        /// </remarks>
         [HttpGet("{id}", Name = "GetAuthor")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [SwaggerOperation("Gets an author with given id", "GET /Authors/5")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Author retrived succesfully")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Author not found")]
         public async Task<ActionResult<ICollection<AuthorReadDto>>> GetAuthor(int id)
         {
             var author = await _authorRepository.GetByIdAsync(id);
@@ -74,16 +71,10 @@ namespace EduMatApi.Controllers
         /// Creates a new author
         /// </summary>
         /// <returns>Created author</returns>
-        /// <remarks>
-        /// POST /Authors
-        /// {
-        ///     "Name": "AuthorsName",
-        ///     "Description": "AuthorsDescription"
-        /// }
-        /// </remarks>
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation("Creates a new author", "POST /Authors")]
+        [SwaggerResponse(StatusCodes.Status201Created, "Author created succesfully")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Specified author could not be added")]
         public async Task<ActionResult<AuthorReadDto>> CreateAuthor(AuthorCreateDto author)
         {
             var newAuthor = await _authorRepository.AddAsync(_mapper.Map<Author>(author));
@@ -99,5 +90,6 @@ namespace EduMatApi.Controllers
                     _mapper.Map<AuthorReadDto>(newAuthor));
             }
         }
+
     }
 }
