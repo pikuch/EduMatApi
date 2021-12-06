@@ -54,7 +54,7 @@ namespace EduMatApi.Controllers
         /// <remarks>
         /// GET /Authors/5
         /// </remarks>
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetAuthor")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ICollection<AuthorReadDto>>> GetAuthor(int id)
@@ -67,6 +67,36 @@ namespace EduMatApi.Controllers
             else
             {
                 return NotFound();
+            }
+        }
+
+        /// <summary>
+        /// Creates a new author
+        /// </summary>
+        /// <returns>Created author</returns>
+        /// <remarks>
+        /// POST /Authors
+        /// {
+        ///     "Name": "AuthorsName",
+        ///     "Description": "AuthorsDescription"
+        /// }
+        /// </remarks>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<AuthorReadDto>> CreateAuthor(AuthorCreateDto author)
+        {
+            var newAuthor = await _authorRepository.AddAsync(_mapper.Map<Author>(author));
+            if (newAuthor == null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                return CreatedAtRoute(
+                    nameof(GetAuthor),
+                    new {id = newAuthor.Id},
+                    _mapper.Map<AuthorReadDto>(newAuthor));
             }
         }
     }
