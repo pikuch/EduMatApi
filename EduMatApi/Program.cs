@@ -1,4 +1,6 @@
 using EduMatApi.DAL;
+using EduMatApi.DAL.Repositories;
+using EduMatApi.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -26,6 +28,7 @@ builder.Services.AddCors(options =>
                       )
     );
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<IRepository<Author>, Repository<Author>>();
 
 var app = builder.Build();
 
