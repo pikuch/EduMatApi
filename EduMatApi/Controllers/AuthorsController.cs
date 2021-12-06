@@ -112,5 +112,29 @@ namespace EduMatApi.Controllers
             
             return result ? NoContent() : BadRequest();
         }
+
+        /// <summary>
+        /// Updates an existing author
+        /// </summary>
+        /// <returns>Updated author</returns>
+        [HttpPut("{id}")]
+        [SwaggerOperation("Updates an existing author", "PUT /Authors/5")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Author updated succesfully")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Author could not be updated")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Author not found")]
+        public async Task<ActionResult<AuthorReadDto>> UpdateAuthor(int id, AuthorUpdateDto author)
+        {
+            var foundAuthor = await _authorRepository.GetByIdAsync(id);
+            if (foundAuthor == null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(author, foundAuthor);
+
+            bool result = await _authorRepository.UpdateAsync(foundAuthor);
+            
+            return result ? Ok(_mapper.Map<AuthorReadDto>(foundAuthor)) : BadRequest();
+        }
     }
 }
