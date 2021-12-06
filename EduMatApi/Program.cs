@@ -1,5 +1,6 @@
 using EduMatApi.DAL;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +8,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Educational Materials API",
+        Description = "An ASP.NET Core Web API for managing Educational Materials"
+    }
+    );
+});
 builder.Services.AddDbContext<EduMatApiDbContext>(options =>
     options.UseSqlServer(builder.Configuration["ConnectionStrings:EduMatApiDbConnection"]));
 builder.Services.AddCors(options =>
@@ -15,6 +25,7 @@ builder.Services.AddCors(options =>
                       builder => builder.AllowAnyOrigin()
                       )
     );
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 
