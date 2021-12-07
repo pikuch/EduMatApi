@@ -27,7 +27,7 @@ builder.Services.AddDbContext<EduMatApiDbContext>(options =>
     options.UseSqlServer(builder.Configuration["ConnectionStrings:EduMatApiDbConnection"]));
 builder.Services.AddCors(options =>
     options.AddPolicy(name: "AllowAllOrigins",
-                      builder => builder.AllowAnyOrigin()
+                      builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
                       )
     );
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
