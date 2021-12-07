@@ -1,5 +1,6 @@
 using EduMatApi.DAL;
 using EduMatApi.DAL.Repositories;
+using EduMatApi.Filters;
 using EduMatApi.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -35,7 +36,8 @@ builder.Services.AddScoped<IRepository<Author>, Repository<Author>>();
 builder.Services.AddScoped<IRepository<Material>, Repository<Material>>();
 builder.Services.AddScoped<IRepository<MaterialType>, Repository<MaterialType>>();
 builder.Services.AddScoped<IRepository<Review>, Repository<Review>>();
-
+builder.Services.AddMvc(options => options.Filters.Add<EduMatApiExceptionFilter>());
+builder.Services.AddScoped<ILogger<EduMatApiExceptionFilter>, Logger<EduMatApiExceptionFilter>>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
