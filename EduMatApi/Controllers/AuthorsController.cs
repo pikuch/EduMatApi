@@ -18,12 +18,12 @@ namespace EduMatApi.Controllers
     {
         private readonly ILogger<AuthorsController> _logger;
         private readonly IMapper _mapper;
-        private readonly IRepository<Author> _authorRepository;
+        private readonly IAuthorRepository _authorRepository;
 
         public AuthorsController(
             ILogger<AuthorsController> logger,
             IMapper mapper,
-            IRepository<Author> authorRepository)
+            IAuthorRepository authorRepository)
         {
             _logger = logger;
             _mapper = mapper;

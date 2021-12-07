@@ -15,6 +15,7 @@ namespace EduMatApi.Models.Entities
         [StringLength(1000, MinimumLength = 1)]
         public string Description { get; set; } = null!;
 
+        public int MaterialCounter { get; set; }
         public ICollection<Material>? Materials { get; set; }
     }
 }
