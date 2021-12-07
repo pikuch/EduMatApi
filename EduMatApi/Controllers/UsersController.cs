@@ -36,7 +36,6 @@ namespace EduMatApi.Controllers
         /// Authenticates user
         /// </summary>
         /// <param name="userLoginDto">login and password</param>
-        [AllowAnonymous]
         [HttpPost("Login")]
         [SwaggerOperation("Authenticates the user", "POST /User/Login")]
         [SwaggerResponse(StatusCodes.Status200OK, "User authorized")]

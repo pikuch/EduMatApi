@@ -2,6 +2,7 @@ using AutoMapper;
 using EduMatApi.DAL.Repositories;
 using EduMatApi.Models.DTOs;
 using EduMatApi.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -85,9 +86,11 @@ namespace EduMatApi.Controllers
         /// </summary>
         /// <returns>Created material</returns>
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [SwaggerOperation("Creates a new material", "POST /Materials")]
         [SwaggerResponse(StatusCodes.Status201Created, "Material created succesfully")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Specified material could not be added")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "User isn't authorized to access this endpoint")]
         public async Task<ActionResult<MaterialReadDto>> CreateMaterial(MaterialCreateDto material)
         {
             var referencedAuthor = await _authorRepository.GetByIdAsync(material.AuthorId);
@@ -125,9 +128,11 @@ namespace EduMatApi.Controllers
         /// </summary>
         /// <returns>Only a status code</returns>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         [SwaggerOperation("Deletes an existing material", "DELETE /Materials/5")]
         [SwaggerResponse(StatusCodes.Status204NoContent, "Material deleted succesfully")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Material could not be deleted")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "User isn't authorized to access this endpoint")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "Material not found")]
         public async Task<ActionResult<MaterialReadDto>> DeleteMaterial(int id)
         {
@@ -149,9 +154,11 @@ namespace EduMatApi.Controllers
         /// </summary>
         /// <returns>Updated material</returns>
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         [SwaggerOperation("Updates an existing material", "PUT /Materials/5")]
         [SwaggerResponse(StatusCodes.Status200OK, "Material updated succesfully")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Material could not be updated")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "User isn't authorized to access this endpoint")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "Material not found")]
         public async Task<ActionResult<MaterialReadDto>> UpdateMaterial(int id, MaterialUpdateDto material)
         {

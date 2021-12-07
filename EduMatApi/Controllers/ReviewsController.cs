@@ -2,6 +2,7 @@ using AutoMapper;
 using EduMatApi.DAL.Repositories;
 using EduMatApi.Models.DTOs;
 using EduMatApi.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -115,8 +116,10 @@ namespace EduMatApi.Controllers
         /// </summary>
         /// <returns>Only a status code</returns>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         [SwaggerOperation("Deletes an existing review", "DELETE /Reviews/5")]
         [SwaggerResponse(StatusCodes.Status204NoContent, "Review deleted succesfully")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "User isn't authorized to access this endpoint")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Review could not be deleted")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "Review not found")]
         public async Task<ActionResult<ReviewReadDto>> DeleteReview(int id)
