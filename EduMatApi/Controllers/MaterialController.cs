@@ -167,5 +167,36 @@ namespace EduMatApi.Controllers
             
             return result ? Ok(_mapper.Map<MaterialReadDto>(foundMaterial)) : BadRequest();
         }
+
+        /// <summary>
+        /// Gets filtered materials
+        /// </summary>
+        /// <returns>A collection of filtered materials</returns>
+        [HttpGet("filter/{filterQuery}")]
+        [SwaggerOperation("Gets filtered and sorted materials", "GET /Materials/filter/filterQuery?typeId=5&sort=true")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Materials retrived succesfully")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid filter query")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "No materials matching the query found")]
+        public async Task<ActionResult<ICollection<MaterialReadDto>>> GetFilteredMaterials([FromQuery] MaterialFilterQuery filterQuery)
+        {
+            var referencedType = await _materialTypeRepository.GetByIdAsync(filterQuery.typeId);
+            if (referencedType == null)
+            {
+                return BadRequest();
+            }
+
+            var allMaterials = await _materialRepository.GetAllAsync();
+            var filteredMaterials = allMaterials.Where(material => material.MaterialTypeId == filterQuery.typeId).ToList();
+            var sortedMaterials = filterQuery.sort ? filteredMaterials.OrderBy(material => material.PublishDate).ToList() : filteredMaterials;
+
+            if (sortedMaterials.Count > 0)
+            {
+                return Ok(_mapper.Map<ICollection<MaterialReadDto>>(sortedMaterials));
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
     }
 }
