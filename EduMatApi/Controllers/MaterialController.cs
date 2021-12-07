@@ -47,10 +47,12 @@ namespace EduMatApi.Controllers
             var allMaterials = await _materialRepository.GetAllAsync();
             if (allMaterials.Count > 0)
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /Materials returned a {allMaterials.Count} long list of materials.");
                 return Ok(_mapper.Map<ICollection<MaterialReadDto>>(allMaterials));
             }
             else
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /Materials returned 404 because it found no materials.");
                 return NotFound();
             }
         }
@@ -68,10 +70,12 @@ namespace EduMatApi.Controllers
             var material = await _materialRepository.GetByIdAsync(id);
             if (material != null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /Materials/{id} returned requested material.");
                 return Ok(_mapper.Map<MaterialReadDto>(material));
             }
             else
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /Materials/{id} returned 404 because the requested material wasn't found.");
                 return NotFound();
             }
         }
@@ -89,21 +93,26 @@ namespace EduMatApi.Controllers
             var referencedAuthor = await _authorRepository.GetByIdAsync(material.AuthorId);
             if (referencedAuthor == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] POST /Materials returned 400 because of invalid authorId.");
                 return BadRequest();
             }
             var referencedMaterialType = await _materialTypeRepository.GetByIdAsync(material.MaterialTypeId);
             if (referencedMaterialType == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] POST /Materials returned 400 because of invalid materialTypeId.");
                 return BadRequest();
             }
 
             var newMaterial = await _materialRepository.AddAsync(_mapper.Map<Material>(material));
             if (newMaterial == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] POST /Materials returned 400 because it failed to add the material.");
                 return BadRequest();
             }
             else
             {
+                _logger.LogInformation($"[{DateTime.Now}] POST /Materials added a new material with id={newMaterial.Id}.");
+
                 return CreatedAtRoute(
                     nameof(GetMaterial),
                     new {id = newMaterial.Id},
@@ -125,11 +134,13 @@ namespace EduMatApi.Controllers
             var foundMaterial = await _materialRepository.GetByIdAsync(id);
             if (foundMaterial == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] DELETE /Materials/{id} returned 404 because it failed to find the requested material.");
                 return NotFound();
             }
 
             bool result = await _materialRepository.DeleteAsync(id);
-            
+            _logger.LogInformation($"[{DateTime.Now}] DELETE /Materials/{id} deleted the requested material.");
+
             return result ? NoContent() : BadRequest();
         }
 
@@ -147,24 +158,28 @@ namespace EduMatApi.Controllers
             var referencedAuthor = await _authorRepository.GetByIdAsync(material.AuthorId);
             if (referencedAuthor == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] PUT /Materials/{id} returned 400 because authorId wasn't valid.");
                 return BadRequest();
             }
             var referencedMaterialType = await _materialTypeRepository.GetByIdAsync(material.MaterialTypeId);
             if (referencedMaterialType == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] PUT /Materials/{id} returned 400 because materialTypeId wasn't valid.");
                 return BadRequest();
             }
 
             var foundMaterial = await _materialRepository.GetByIdAsync(id);
             if (foundMaterial == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] PUT /Materials/{id} returned 404 because the requested material wasn't found.");
                 return NotFound();
             }
 
             _mapper.Map(material, foundMaterial);
 
             bool result = await _materialRepository.UpdateAsync(foundMaterial);
-            
+            _logger.LogInformation($"[{DateTime.Now}] PUT /Materials/{id} updated the requested material.");
+
             return result ? Ok(_mapper.Map<MaterialReadDto>(foundMaterial)) : BadRequest();
         }
 
@@ -182,6 +197,7 @@ namespace EduMatApi.Controllers
             var referencedType = await _materialTypeRepository.GetByIdAsync(filterQuery.typeId);
             if (referencedType == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /Materials/filter/filterQuery with typeId={filterQuery.typeId} returned 400 because the requested typeId wasn't found.");
                 return BadRequest();
             }
 
@@ -191,10 +207,12 @@ namespace EduMatApi.Controllers
 
             if (sortedMaterials.Count > 0)
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /Materials/filter/filterQuery with typeId={filterQuery.typeId} returned the filtered material list.");
                 return Ok(_mapper.Map<ICollection<MaterialReadDto>>(sortedMaterials));
             }
             else
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /Materials/filter/filterQuery with typeId={filterQuery.typeId} returned 404 because the filtered material list was empty.");
                 return NotFound();
             }
         }

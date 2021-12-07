@@ -44,10 +44,12 @@ namespace EduMatApi.Controllers
             var allReviews = await _reviewRepository.GetAllAsync();
             if (allReviews.Count > 0)
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /Reviews returned {allReviews.Count} reviews.");
                 return Ok(_mapper.Map<ICollection<ReviewReadDto>>(allReviews));
             }
             else
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /Reviews returned 404 because it didn't find any reviews.");
                 return NotFound();
             }
         }
@@ -65,10 +67,12 @@ namespace EduMatApi.Controllers
             var review = await _reviewRepository.GetByIdAsync(id);
             if (review != null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /Reviews/{id} returned the requested review.");
                 return Ok(_mapper.Map<ReviewReadDto>(review));
             }
             else
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /Reviews/{id} returned 404 because it didn't find the requested review.");
                 return NotFound();
             }
         }
@@ -86,16 +90,19 @@ namespace EduMatApi.Controllers
             var referencedMaterial = await _materialRepository.GetByIdAsync(review.MaterialId);
             if (referencedMaterial == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] POST /Reviews returned 400 because referenced material didn't exist.");
                 return BadRequest();
             }
 
             var newReview = await _reviewRepository.AddAsync(_mapper.Map<Review>(review));
             if (newReview == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] POST /Reviews returned 400 because it failed to add the requested review.");
                 return BadRequest();
             }
             else
             {
+                _logger.LogInformation($"[{DateTime.Now}] POST /Reviews added a new review with id={newReview.Id}.");
                 return CreatedAtRoute(
                     nameof(GetReview),
                     new {id = newReview.Id},
@@ -117,11 +124,13 @@ namespace EduMatApi.Controllers
             var foundReview = await _reviewRepository.GetByIdAsync(id);
             if (foundReview == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] DELETE /Reviews/{id} didn't find the requested review.");
                 return NotFound();
             }
 
             bool result = await _reviewRepository.DeleteAsync(id);
-            
+            _logger.LogInformation($"[{DateTime.Now}] DELETE /Reviews/{id} deleted the requested review.");
+
             return result ? NoContent() : BadRequest();
         }
 
@@ -139,19 +148,22 @@ namespace EduMatApi.Controllers
             var referencedMaterial = await _materialRepository.GetByIdAsync(review.MaterialId);
             if (referencedMaterial == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] PUT /Reviews/{id} returned 400 because referenced material didn't exist.");
                 return BadRequest();
             }
 
             var foundReview = await _reviewRepository.GetByIdAsync(id);
             if (foundReview == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] PUT /Reviews/{id} didn't find the requested review.");
                 return NotFound();
             }
 
             _mapper.Map(review, foundReview);
 
             bool result = await _reviewRepository.UpdateAsync(foundReview);
-            
+            _logger.LogInformation($"[{DateTime.Now}] PUT /Reviews/{id} succesfully updated the requested review.");
+
             return result ? Ok(_mapper.Map<ReviewReadDto>(foundReview)) : BadRequest();
         }
     }

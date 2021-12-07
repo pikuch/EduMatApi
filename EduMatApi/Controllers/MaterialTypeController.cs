@@ -41,10 +41,12 @@ namespace EduMatApi.Controllers
             var allMaterialTypes = await _materialTypeRepository.GetAllAsync();
             if (allMaterialTypes.Count > 0)
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /MaterialTypes returned {allMaterialTypes.Count} materialTypes.");
                 return Ok(_mapper.Map<ICollection<MaterialTypeReadDto>>(allMaterialTypes));
             }
             else
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /MaterialTypes returned 404 after finding no materialTypes.");
                 return NotFound();
             }
         }
@@ -62,10 +64,12 @@ namespace EduMatApi.Controllers
             var materialType = await _materialTypeRepository.GetByIdAsync(id);
             if (materialType != null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /MaterialTypes/{id} returned requested materialType.");
                 return Ok(_mapper.Map<MaterialTypeReadDto>(materialType));
             }
             else
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /MaterialTypes/{id} didn't find the requested materialType.");
                 return NotFound();
             }
         }
@@ -83,10 +87,13 @@ namespace EduMatApi.Controllers
             var newMaterialType = await _materialTypeRepository.AddAsync(_mapper.Map<MaterialType>(materialType));
             if (newMaterialType == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] POST /MaterialTypes returned 400 after it failed to add a materialType.");
                 return BadRequest();
             }
             else
             {
+                _logger.LogInformation($"[{DateTime.Now}] POST /MaterialTypes added a new materialType with id={newMaterialType.Id}.");
+
                 return CreatedAtRoute(
                     nameof(GetMaterialType),
                     new {id = newMaterialType.Id},
@@ -108,11 +115,13 @@ namespace EduMatApi.Controllers
             var foundMaterialType = await _materialTypeRepository.GetByIdAsync(id);
             if (foundMaterialType == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] DELETE /MaterialTypes/{id} didn't find the requested materialType.");
                 return NotFound();
             }
 
             bool result = await _materialTypeRepository.DeleteAsync(id);
-            
+            _logger.LogInformation($"[{DateTime.Now}] DELETE /MaterialTypes/{id} deleted the requested materialType.");
+
             return result ? NoContent() : BadRequest();
         }
 
@@ -130,13 +139,15 @@ namespace EduMatApi.Controllers
             var foundMaterialType = await _materialTypeRepository.GetByIdAsync(id);
             if (foundMaterialType == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] PUT /MaterialTypes/{id} didn't find the requested materialType.");
                 return NotFound();
             }
 
             _mapper.Map(materialType, foundMaterialType);
 
             bool result = await _materialTypeRepository.UpdateAsync(foundMaterialType);
-            
+            _logger.LogInformation($"[{DateTime.Now}] PUT /MaterialTypes/{id} updated the requested materialType.");
+
             return result ? Ok(_mapper.Map<MaterialTypeReadDto>(foundMaterialType)) : BadRequest();
         }
     }

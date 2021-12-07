@@ -42,10 +42,12 @@ namespace EduMatApi.Controllers
             var allAuthors = await _authorRepository.GetAllAsync();
             if (allAuthors.Count > 0)
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /Authors returned a {allAuthors.Count} long list of authors.");
                 return Ok(_mapper.Map<ICollection<AuthorReadDto>>(allAuthors));
             }
             else
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /Authors returned 404 because there were no authors.");
                 return NotFound();
             }
         }
@@ -63,10 +65,12 @@ namespace EduMatApi.Controllers
             var author = await _authorRepository.GetByIdAsync(id);
             if (author != null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /Authors/{id} returned an author.");
                 return Ok(_mapper.Map<AuthorReadDto>(author));
             }
             else
             {
+                _logger.LogInformation($"[{DateTime.Now}] GET /Authors/{id} did not find the author.");
                 return NotFound();
             }
         }
@@ -84,10 +88,12 @@ namespace EduMatApi.Controllers
             var newAuthor = await _authorRepository.AddAsync(_mapper.Map<Author>(author));
             if (newAuthor == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] POST /Authors returned 400 because it failed to add the author.");
                 return BadRequest();
             }
             else
             {
+                _logger.LogInformation($"[{DateTime.Now}] POST /Authors added an author with id={newAuthor.Id}.");
                 return CreatedAtRoute(
                     nameof(GetAuthor),
                     new {id = newAuthor.Id},
@@ -109,11 +115,13 @@ namespace EduMatApi.Controllers
             var foundAuthor = await _authorRepository.GetByIdAsync(id);
             if (foundAuthor == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] DELETE /Authors/{id} returned 404 because the author with given id didn't exist.");
                 return NotFound();
             }
 
             bool result = await _authorRepository.DeleteAsync(id);
-            
+            _logger.LogInformation($"[{DateTime.Now}] DELETE /Authors/{id} deleted the author with id={id}.");
+
             return result ? NoContent() : BadRequest();
         }
 
@@ -131,13 +139,15 @@ namespace EduMatApi.Controllers
             var foundAuthor = await _authorRepository.GetByIdAsync(id);
             if (foundAuthor == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] PUT /Authors/{id} returned 404 because it didn't find the requested author.");
                 return NotFound();
             }
 
             _mapper.Map(author, foundAuthor);
 
             bool result = await _authorRepository.UpdateAsync(foundAuthor);
-            
+            _logger.LogInformation($"[{DateTime.Now}] PUT /Authors/{id} returned the updated author.");
+
             return result ? Ok(_mapper.Map<AuthorReadDto>(foundAuthor)) : BadRequest();
         }
 
@@ -155,6 +165,7 @@ namespace EduMatApi.Controllers
             var foundAuthor = await _authorRepository.GetByIdAsync(id);
             if (foundAuthor == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] PATCH /Authors/{id} returned 404 because it didn't find the requested author.");
                 return NotFound();
             }
 
@@ -165,12 +176,14 @@ namespace EduMatApi.Controllers
             ModelState.ClearValidationState(nameof(existingAuthorDto));
             if (!TryValidateModel(existingAuthorDto, nameof(existingAuthorDto)))
             {
+                _logger.LogInformation($"[{DateTime.Now}] PATCH /Authors/{id} returned 400 after the request failed validation.");
                 return BadRequest();
             }
 
             _mapper.Map(existingAuthorDto, foundAuthor);
 
             bool result = await _authorRepository.UpdateAsync(foundAuthor);
+            _logger.LogInformation($"[{DateTime.Now}] PATCH /Authors/{id} succesfully patched the author.");
 
             return result ? Ok(_mapper.Map<AuthorReadDto>(foundAuthor)) : BadRequest();
         }
