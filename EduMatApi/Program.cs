@@ -26,6 +26,8 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddDbContext<EduMatApiDbContext>(options =>
     options.UseSqlServer(builder.Configuration["ConnectionStrings:EduMatApiDbConnection"]));
+builder.Services.AddDbContext<UserDbContext>(options =>
+    options.UseSqlServer(builder.Configuration["ConnectionStrings:UserDbConnection"]));
 builder.Services.AddCors(options =>
     options.AddPolicy(name: "AllowAllOrigins",
                       builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()

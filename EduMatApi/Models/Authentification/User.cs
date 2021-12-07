@@ -2,8 +2,9 @@
 
 namespace EduMatApi.Models.Authentification
 {
-    public class UserModel
+    public class User
     {
+        [Key]
         [Required]
         [StringLength(20, MinimumLength = 1)]
         public string Login { get; set; } = null!;
