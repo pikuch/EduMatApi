@@ -2,6 +2,7 @@ using AutoMapper;
 using EduMatApi.DAL.Repositories;
 using EduMatApi.Models.DTOs;
 using EduMatApi.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -79,9 +80,11 @@ namespace EduMatApi.Controllers
         /// </summary>
         /// <returns>Created material type</returns>
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [SwaggerOperation("Creates a new material type", "POST /MaterialTypes")]
         [SwaggerResponse(StatusCodes.Status201Created, "Material type created succesfully")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Specified material type could not be added")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "User isn't authorized to access this endpoint")]
         public async Task<ActionResult<MaterialTypeReadDto>> CreateMaterialType(MaterialTypeCreateDto materialType)
         {
             var newMaterialType = await _materialTypeRepository.AddAsync(_mapper.Map<MaterialType>(materialType));
@@ -106,9 +109,11 @@ namespace EduMatApi.Controllers
         /// </summary>
         /// <returns>Only a status code</returns>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         [SwaggerOperation("Deletes an existing material type", "DELETE /MaterialTypes/5")]
         [SwaggerResponse(StatusCodes.Status204NoContent, "Material type deleted succesfully")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Material type could not be deleted")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "User isn't authorized to access this endpoint")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "Material type not found")]
         public async Task<ActionResult<MaterialTypeReadDto>> DeleteMaterialType(int id)
         {
@@ -130,9 +135,11 @@ namespace EduMatApi.Controllers
         /// </summary>
         /// <returns>Updated material type</returns>
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         [SwaggerOperation("Updates an existing material type", "PUT /MaterialTypes/5")]
         [SwaggerResponse(StatusCodes.Status200OK, "Material type updated succesfully")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Material type could not be updated")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "User isn't authorized to access this endpoint")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "Material type not found")]
         public async Task<ActionResult<MaterialTypeReadDto>> UpdateMaterialType(int id, MaterialTypeUpdateDto materialType)
         {

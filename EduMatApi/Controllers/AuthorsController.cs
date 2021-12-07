@@ -2,6 +2,7 @@ using AutoMapper;
 using EduMatApi.DAL.Repositories;
 using EduMatApi.Models.DTOs;
 using EduMatApi.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -80,9 +81,11 @@ namespace EduMatApi.Controllers
         /// </summary>
         /// <returns>Created author</returns>
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [SwaggerOperation("Creates a new author", "POST /Authors")]
         [SwaggerResponse(StatusCodes.Status201Created, "Author created succesfully")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Specified author could not be added")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "User isn't authorized to access this endpoint")]
         public async Task<ActionResult<AuthorReadDto>> CreateAuthor(AuthorCreateDto author)
         {
             var newAuthor = await _authorRepository.AddAsync(_mapper.Map<Author>(author));
@@ -106,9 +109,11 @@ namespace EduMatApi.Controllers
         /// </summary>
         /// <returns>Only a status code</returns>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         [SwaggerOperation("Deletes an existing author", "DELETE /Authors/5")]
         [SwaggerResponse(StatusCodes.Status204NoContent, "Author deleted succesfully")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Author could not be deleted")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "User isn't authorized to access this endpoint")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "Author not found")]
         public async Task<ActionResult<AuthorReadDto>> DeleteAuthor(int id)
         {
@@ -130,9 +135,11 @@ namespace EduMatApi.Controllers
         /// </summary>
         /// <returns>Updated author</returns>
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         [SwaggerOperation("Updates an existing author", "PUT /Authors/5")]
         [SwaggerResponse(StatusCodes.Status200OK, "Author updated succesfully")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Author could not be updated")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "User isn't authorized to access this endpoint")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "Author not found")]
         public async Task<ActionResult<AuthorReadDto>> UpdateAuthor(int id, AuthorUpdateDto author)
         {
@@ -156,9 +163,11 @@ namespace EduMatApi.Controllers
         /// </summary>
         /// <returns>Updated author</returns>
         [HttpPatch("{id}")]
+        [Authorize(Roles = "Admin")]
         [SwaggerOperation("Partially updates an existing author", "PATCH /Authors/5")]
         [SwaggerResponse(StatusCodes.Status200OK, "Author updated succesfully")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Author could not be updated")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "User isn't authorized to access this endpoint")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "Author not found")]
         public async Task<ActionResult<AuthorReadDto>> PartiallyUpdateAuthor(int id, [FromBody] JsonPatchDocument<AuthorUpdateDto> authorUpdate)
         {

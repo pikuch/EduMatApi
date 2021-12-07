@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EduMatApi.Models.Authentification;
 using EduMatApi.Models.DTOs;
 using EduMatApi.Models.Entities;
 
@@ -24,6 +25,8 @@ namespace EduMatApi.Models
             CreateMap<ReviewCreateDto, Review>();
             CreateMap<ReviewUpdateDto, Review>();
             CreateMap<Review, ReviewReadDto>();
+
+            CreateMap<UserRegisterDto, User>();
         }
     }
 }
