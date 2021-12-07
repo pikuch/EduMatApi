@@ -63,7 +63,7 @@ namespace EduMatApi
                                   )
                 );
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddScoped<IRepository<Author>, Repository<Author>>();
+            services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IRepository<Material>, Repository<Material>>();
             services.AddScoped<IRepository<MaterialType>, Repository<MaterialType>>();
             services.AddScoped<IRepository<Review>, Repository<Review>>();
