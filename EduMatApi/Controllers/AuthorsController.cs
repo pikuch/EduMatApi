@@ -2,6 +2,7 @@ using AutoMapper;
 using EduMatApi.DAL.Repositories;
 using EduMatApi.Models.DTOs;
 using EduMatApi.Models.Entities;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -137,6 +138,40 @@ namespace EduMatApi.Controllers
 
             bool result = await _authorRepository.UpdateAsync(foundAuthor);
             
+            return result ? Ok(_mapper.Map<AuthorReadDto>(foundAuthor)) : BadRequest();
+        }
+
+        /// <summary>
+        /// Partially updates an existing author
+        /// </summary>
+        /// <returns>Updated author</returns>
+        [HttpPatch("{id}")]
+        [SwaggerOperation("Partially updates an existing author", "PATCH /Authors/5")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Author updated succesfully")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Author could not be updated")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Author not found")]
+        public async Task<ActionResult<AuthorReadDto>> PartiallyUpdateAuthor(int id, [FromBody] JsonPatchDocument<AuthorUpdateDto> authorUpdate)
+        {
+            var foundAuthor = await _authorRepository.GetByIdAsync(id);
+            if (foundAuthor == null)
+            {
+                return NotFound();
+            }
+
+            var existingAuthorDto = _mapper.Map<AuthorUpdateDto>(foundAuthor);
+
+            authorUpdate.ApplyTo(existingAuthorDto);
+
+            ModelState.ClearValidationState(nameof(existingAuthorDto));
+            if (!TryValidateModel(existingAuthorDto, nameof(existingAuthorDto)))
+            {
+                return BadRequest();
+            }
+
+            _mapper.Map(existingAuthorDto, foundAuthor);
+
+            bool result = await _authorRepository.UpdateAsync(foundAuthor);
+
             return result ? Ok(_mapper.Map<AuthorReadDto>(foundAuthor)) : BadRequest();
         }
     }

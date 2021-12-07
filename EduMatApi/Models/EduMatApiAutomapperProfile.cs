@@ -10,6 +10,7 @@ namespace EduMatApi.Models
         {
             CreateMap<AuthorCreateDto, Author>();
             CreateMap<AuthorUpdateDto, Author>();
+            CreateMap<Author, AuthorUpdateDto>();
             CreateMap<Author, AuthorReadDto>();
 
             CreateMap<MaterialCreateDto, Material>();
