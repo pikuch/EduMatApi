@@ -46,8 +46,10 @@ namespace EduMatApi.Controllers
             var token = await _jwtAuthenticator.Authentication(userLoginDto.Login, userLoginDto.Password, _userRepository);
             if (token == null)
             {
+                _logger.LogInformation($"[{DateTime.Now}] Failed login attempt using login {userLoginDto.Login}");
                 return Unauthorized();
             }
+            _logger.LogInformation($"[{DateTime.Now}] Successful login by {userLoginDto.Login}");
             return Ok(token);
         }
     }
