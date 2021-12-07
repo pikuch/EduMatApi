@@ -1,9 +1,13 @@
+using EduMatApi.Authentication;
 using EduMatApi.DAL;
 using EduMatApi.DAL.Repositories;
 using EduMatApi.Filters;
 using EduMatApi.Models.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +27,25 @@ builder.Services.AddSwaggerGen(options =>
 
     options.EnableAnnotations();
 });
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false; // enable in production
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+});
+
+builder.Services.AddSingleton<IJwtAuthenticator>(new JwtAuthenticator(builder.Configuration["Jwt:Key"]));
 
 builder.Services.AddDbContext<EduMatApiDbContext>(options =>
     options.UseSqlServer(builder.Configuration["ConnectionStrings:EduMatApiDbConnection"]));

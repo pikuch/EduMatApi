@@ -2,6 +2,7 @@ using AutoMapper;
 using EduMatApi.DAL.Repositories;
 using EduMatApi.Models.DTOs;
 using EduMatApi.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
